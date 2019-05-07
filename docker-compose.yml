@@ -1,0 +1,27 @@
+version: "3"
+
+networks:
+  dev:
+
+services:
+
+  aunema:
+    container_name: aunema
+    build:
+      args:
+        PROJECT: aunema
+      context: .
+      dockerfile: ./docker/Dockerfile
+    environment:
+      PRODUCTION: "true"
+      SERVER_PORT: 8000
+
+      STORAGE_AUTH: "./storage/auth"
+      STORAGE_TEMPORARY: "./storage/videos/tmp"
+      STORAGE_FINISHED: "./storage/videos/fin"
+      STORAGE_ELEMENTS: "./storage/videos/elms"
+      STORAGE_PRODUCTION: "./storage/videos/prod"
+    ports:
+      - 8000:8000
+    networks:
+      - dev
