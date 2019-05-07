@@ -1,4 +1,5 @@
 use crate::config::Config;
+use crate::helpers::database;
 use actix_web::{server, App, HttpRequest, Responder};
 
 fn greet(req: &HttpRequest) -> impl Responder {
@@ -7,6 +8,7 @@ fn greet(req: &HttpRequest) -> impl Responder {
 }
 
 pub fn init_services(cnfg: &Config) {
+    database::init_database(&cnfg).expect("Failed to init database");
     println!("{:?}", cnfg);
 
     server::new(|| {
