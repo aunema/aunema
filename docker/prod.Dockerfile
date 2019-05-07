@@ -1,4 +1,4 @@
-FROM liuchong/rustup:1.34.1-musl AS builder
+FROM liuchong/rustup:nightly-musl AS builder
 
 ARG PROJECT=dev
 WORKDIR /usr/src/${PROJECT}/

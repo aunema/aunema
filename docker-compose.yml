@@ -11,7 +11,9 @@ services:
       args:
         PROJECT: aunema
       context: .
-      dockerfile: ./docker/Dockerfile
+      dockerfile: ./docker/dev.Dockerfile
+    volumes:
+      - ./src:/usr/src/aunema/src
     environment:
       PRODUCTION: "true"
       SERVER_PORT: 8000
