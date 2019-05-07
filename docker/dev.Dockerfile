@@ -11,10 +11,4 @@ RUN apt-get -y update && \
 
 COPY Cargo.toml Cargo.lock ./
 
-RUN mkdir src/ && \
-    echo "fn main() {println!(\"if you see this, the build broke\")}" > src/main.rs && \
-    cargo build --release --target=x86_64-unknown-linux-musl && \
-    rm -rf src && \
-    rm -f target/x86_64-unknown-linux-musl/release/deps/${PROJECT}*
-
 CMD cargo watch -q -x run

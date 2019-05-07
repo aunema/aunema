@@ -3,10 +3,10 @@ FROM liuchong/rustup:nightly-musl AS builder
 ARG PROJECT=dev
 WORKDIR /usr/src/${PROJECT}/
 
-COPY Cargo.toml Cargo.lock ./
-
 ENV RUSTFLAGS=-Clinker=musl-gcc
 RUN rustup target install x86_64-unknown-linux-musl
+
+COPY Cargo.toml Cargo.lock ./
 
 RUN mkdir src/ && \
     echo "fn main() {println!(\"if you see this, the build broke\")}" > src/main.rs && \

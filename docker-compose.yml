@@ -3,6 +3,9 @@ version: "3"
 networks:
   dev:
 
+volumes:
+  data:
+
 services:
 
   aunema:
@@ -25,5 +28,18 @@ services:
       STORAGE_PRODUCTION: "./storage/videos/prod"
     ports:
       - 8000:8000
+    networks:
+      - dev
+    depends_on:
+      - db
+
+  db:
+    container_name: db
+    image: cockroachdb/cockroach
+    command: start --insecure
+    volumes:
+      - data:/cockroach/cockroach-data
+    ports:
+      - "26257:26257"
     networks:
       - dev
