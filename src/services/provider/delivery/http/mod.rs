@@ -2,26 +2,19 @@ use crate::config::Config;
 
 use actix_web::{web, App, HttpRequest, HttpResponse};
 
-pub struct ProviderHttp<'a> {
-    pub cnfg: &'a Config,
-}
-
-impl<'a> Clone for ProviderHttp<'a> {
-    fn clone(&self) -> Self {
-        *self
-    }
-}
+use std::sync::Mutex;
 
 pub fn init(cnfg: &Config) {
-    let provider = ProviderHttp{cnfg:cnfg};
+    let data = web::Data::new(Mutex::new(cnfg.clone()));
 
     // Todo: Fix it with static lifetime
     App::new()
-        .data(&provider)
+        .data(data.clone())
         .service(web::resource("/").to(index));
 }
 
-fn index(state: web::Data<ProviderHttp>, req: HttpRequest) -> HttpResponse {
+fn index(state: web::Data<Mutex<Config>>, req: HttpRequest) -> HttpResponse {
+    let state = state.lock().unwrap();
     println!("{:?}", req);
-    HttpResponse::Ok().body(format!("Server port is {}", state.cnfg.server_port))
+    HttpResponse::Ok().body(format!("Server port is {}", state.server_port))
 }

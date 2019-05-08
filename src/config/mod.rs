@@ -1,7 +1,7 @@
 use envy::{from_env, prefixed};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Config {
     pub production: bool,
     pub server_port: i16,
@@ -11,7 +11,7 @@ pub struct Config {
     pub storage: Option<Storage>,
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Storage {
     pub auth: String,
     pub temporary: String,
