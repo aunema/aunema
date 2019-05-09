@@ -1,13 +1,19 @@
 use crate::config::Config;
 
 use actix_web::{web, App, HttpRequest, HttpResponse};
-
+use std::sync::Arc;
 use std::sync::Mutex;
 
-pub fn init(cnfg: &Config) {
-    let data = web::Data::new(Mutex::new(cnfg.clone()));
+#[derive(Clone, Debug)]
+pub struct ProviderHttp {
+    pub cnfg: Arc<Config>,
+}
 
-    // Todo: Fix it with static lifetime
+pub fn init(cnfg: Arc<Config>) {
+    let provider = ProviderHttp {
+        cnfg: cnfg,
+    };
+    let data = web::Data::new(Mutex::new(provider));
     App::new()
         .data(data.clone())
         .service(web::resource("/").to(index));

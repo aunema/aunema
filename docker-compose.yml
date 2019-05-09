@@ -20,7 +20,7 @@ services:
     environment:
       PRODUCTION: "false"
       SERVER_PORT: 8000
-      DB_CONNECTION: "postgresql://pguser:pguser@db:5432/aunema"
+      DB_CONNECTION: "postgresql://root@db:26257"
 
       STORAGE_AUTH: "./storage/auth"
       STORAGE_TEMPORARY: "./storage/videos/tmp"
@@ -36,33 +36,15 @@ services:
 
   db:
     container_name: db
-    image: postgres:11-alpine
+    image: cockroachdb/cockroach
+    entrypoint: "/bin/bash"
+    command: /setup_db.sh
     volumes:
-      - data:/var/lib/postgresql
-      - ./db:/docker-entrypoint-initdb.d
-    environment:
-      POSTGRES_USER: pguser
-      POSTGRES_PASSWORD: pguser
-      POSTGRES_DB: aunema
+      - data:/cockroach/cockroach-data
     ports:
-      - 5432:5432
+      - "8080:8080"
+      - "26257:26257"
     logging:
       driver: none
     networks:
       - dev
-
-  # db:
-  #   container_name: db
-  #   image: cockroachdb/cockroach
-  #   entrypoint: "/bin/bash"
-  #   command: /setup_db.sh
-  #   volumes:
-  #     - data:/cockroach/cockroach-data
-  #     - ./db/setup_db.sh:/setup_db.sh
-  #   ports:
-  #     - "8080:8080"
-  #     - "26257:26257"
-  #   # logging:
-  #   #   driver: none
-  #   networks:
-  #     - dev

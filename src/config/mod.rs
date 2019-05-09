@@ -1,5 +1,6 @@
 use envy::{from_env, prefixed};
 use serde::{Deserialize, Serialize};
+use std::sync::Arc;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Config {
@@ -21,10 +22,10 @@ pub struct Storage {
 }
 
 impl Config {
-    pub fn init() -> Result<Self, Box<std::error::Error>> {
+    pub fn init() -> Result<Arc<Self>, Box<std::error::Error>> {
         let mut cnfg = from_env::<Config>()?;
         let storage = prefixed("STORAGE_").from_env::<Storage>()?;
         cnfg.storage = Some(storage);
-        Ok(cnfg)
+        Ok(Arc::new(cnfg))
     }
 }
