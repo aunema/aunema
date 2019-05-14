@@ -14,7 +14,7 @@ services:
       args:
         PROJECT: aunema
       context: .
-      dockerfile: ./docker/prod.Dockerfile
+      dockerfile: ./docker/dev.Dockerfile
     volumes:
       - ./src:/usr/src/aunema/src
     environment:
@@ -37,8 +37,7 @@ services:
   db:
     container_name: db
     image: cockroachdb/cockroach
-    entrypoint: "/bin/bash"
-    command: /setup_db.sh
+    command: start --insecure
     volumes:
       - data:/cockroach/cockroach-data
     ports:
