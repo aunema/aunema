@@ -17,6 +17,7 @@ services:
       dockerfile: ./docker/dev.Dockerfile
     volumes:
       - ./src:/usr/src/aunema/src
+    env_file: .env
     environment:
       PRODUCTION: "false"
       SERVER_PORT: 8000
@@ -47,3 +48,14 @@ services:
       driver: none
     networks:
       - dev
+
+  migrate:
+    container_name: migrate
+    image: migrate/migrate
+    command: -path /migrations -database cockroachdb://db:26257?sslmode=disable up 1
+    volumes:
+      - ./migrations:/migrations
+    networks:
+      - dev
+    depends_on:
+      - db
