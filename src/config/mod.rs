@@ -1,5 +1,4 @@
 use envy::{from_env, prefixed};
-use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

@@ -1,8 +1,10 @@
+mod reddit;
+mod links;
+
 use crate::config::Config;
 use crate::services::provider::controller::ProviderController;
 
 use actix_web::{web, HttpResponse, Scope};
-use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
 #[derive(Clone, Debug)]
@@ -18,7 +20,9 @@ pub fn init(cnfg: &Arc<Config>, provider_cnr: &Arc<ProviderController>) -> Scope
     };
     web::scope("/provider")
         .data(provider)
-        .route("/send", web::get().to(send_mail))
+        .route("/email", web::get().to(send_mail))
+        .service(reddit::init_endpoints())
+        .service(links::init_endpoints())
 }
 
 #[derive(Debug, Serialize, Deserialize)]

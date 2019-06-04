@@ -1,8 +1,8 @@
 use crate::config::Config;
 
-use sendgrid::errors::SendgridError;
 use sendgrid::v3::{Email, Message, Personalization, Sender};
 use std::sync::Arc;
+use std::error::Error;
 
 #[derive(Clone, Debug)]
 pub struct Mailer {
@@ -10,20 +10,26 @@ pub struct Mailer {
     pub sender: Arc<Sender>,
 }
 
-pub fn init_mailer(cnfg: &Arc<Config>) -> Arc<Mailer> {
-    let csg = cnfg.sendgrid.clone().expect("Sendgrid is not initialized");
+pub fn init_mailer(cnfg: &Arc<Config>) -> Result<Arc<Mailer>, Box<Error>> {
+    let csg = match cnfg.sendgrid.clone() {
+        Some(csg) => csg,
+        None => return Err(Box::from("Sendgrid is not initialized")),
+    };
     let sender = Sender::new(csg.api_key.clone());
     let client = Mailer {
         cnfg: cnfg.clone(),
         sender: Arc::new(sender),
     };
-    Arc::new(client)
+    Ok(Arc::new(client))
 }
 
 impl Mailer {
-    pub fn send(&self, to: String, template_id: String) -> Result<(), SendgridError> {
+    pub fn send(&self, to: String, template_id: String) -> Result<(), Box<Error>> {
         let pln = Personalization::new().add_to(Email::new().set_email(&to));
-        let csg = self.cnfg.sendgrid.clone().expect("Sendgrid is not initialized");
+        let csg = match self.cnfg.sendgrid.clone() {
+            Some(csg) => csg,
+            None => return Err(Box::from("Sendgrid is not initialized")),
+        };
         let msg = Message::new()
             .set_from(
                 Email::new()
@@ -33,7 +39,10 @@ impl Mailer {
             .set_template_id(&template_id)
             .add_personalization(pln);
 
-        self.sender.send(&msg)?;
+        match self.sender.send(&msg) {
+            Ok(_) => (),
+            Err(_) => return Err(Box::from("Failed to send mail")),
+        };
         Ok(())
     }
 }

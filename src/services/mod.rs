@@ -9,7 +9,7 @@ use std::sync::Arc;
 
 pub fn init_services(cnfg: Arc<Config>) {
     let db_pool = database::init_pool(&cnfg, 5).expect("Failed to init database connection");
-    let mailer = email::init_mailer(&cnfg);
+    let mailer = email::init_mailer(&cnfg).expect("Failed to init mailer");
 
     let provider_ucs = provider::usecase::init(&cnfg, &db_pool);
 

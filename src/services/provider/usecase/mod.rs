@@ -1,3 +1,5 @@
+mod links;
+
 use crate::config::Config;
 use crate::helpers::database::Database;
 

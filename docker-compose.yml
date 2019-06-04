@@ -33,7 +33,7 @@ services:
     networks:
       - dev
     depends_on:
-      - db
+      - migrate
 
   db:
     container_name: db
@@ -52,7 +52,7 @@ services:
   migrate:
     container_name: migrate
     image: migrate/migrate
-    command: -path /migrations -database cockroachdb://db:26257?sslmode=disable up 1
+    command: -path /migrations -database "cockroachdb://root@db:26257?sslmode=disable" -verbose up 1
     volumes:
       - ./migrations:/migrations
     networks:

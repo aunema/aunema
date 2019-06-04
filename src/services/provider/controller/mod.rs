@@ -1,3 +1,6 @@
+mod image;
+mod links;
+
 use crate::config::Config;
 use crate::helpers::email::Mailer;
 use crate::services::provider::usecase::ProviderUsecase;
@@ -30,4 +33,6 @@ impl ProviderController {
             .send(email, template_id)
             .expect("Failed to send mail");
     }
+
+    pub fn fetch_reddit_posts(&self) {}
 }
