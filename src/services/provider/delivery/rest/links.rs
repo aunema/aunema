@@ -1,4 +1,5 @@
 use crate::models::SocialNetwork;
+use crate::helpers::handler;
 
 use actix_web::{web, HttpResponse, Scope};
 use validator::Validate;
@@ -40,7 +41,6 @@ pub fn add_link(
 
 // Todo: Fix deserialization errors to send as json
 // Todo: Add default values
-// Todo: Move stupid stuff to functions in helperss
 
 #[derive(Debug, Serialize, Deserialize, Validate)]
 pub struct GetLinksParams {
@@ -65,10 +65,7 @@ pub fn get_links(
                     errors.push(format!("Field {} failed with {} error", key, inner.code));
                 }
             };
-            let res = json::object! { "success" => false, "errors" => errors }.dump();
-            return HttpResponse::InternalServerError()
-                .content_type("application/json")
-                .body(res)
+            return handler::handle(Err(errors));
         }
     };
     let result = data.provider_cnr.get_links(
@@ -78,16 +75,10 @@ pub fn get_links(
     );
     match result {
         Ok(value) => {
-            let res = json::object! { "success" => true, "data" => json::parse(&serde_json::to_string(&value).expect("msg: &str")).expect("msg: &str") }.dump();
-            HttpResponse::Ok()
-                .content_type("application/json")
-                .body(res)
+            handler::handle(Ok(json::parse(&serde_json::to_string(&value).expect("msg: &str")).expect("msg: &str")))
         }
         Err(err) => {
-            let res = json::object! { "success" => false, "error" => err.to_string() }.dump();
-            HttpResponse::InternalServerError()
-                .content_type("application/json")
-                .body(res)
+            handler::handle(Err(vec![err.to_string()]))
         }
     }
 }
