@@ -43,7 +43,7 @@ pub fn get_links(
     body: web::Query<GetLinksParams>,
     data: web::Data<super::ProviderRest>,
 ) -> HttpResponse {
-    crate::handle_errors!(body);
+    crate::validate_errors!(body);
     let result = data.provider_cnr.get_links(
         body.social_network.clone(),
         body.limit.clone(),

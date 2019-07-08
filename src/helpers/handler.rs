@@ -3,7 +3,7 @@ use std::error::Error;
 use validator::ValidationErrors;
 
 #[macro_export]
-macro_rules! handle_errors {
+macro_rules! validate_errors {
     ($var:expr) => {
         match handler::to_errors($var.validate()) {
             Some(res) => {
@@ -40,8 +40,8 @@ where
 {
     match result {
         Ok(data) => {
-            let deserialized = &serde_json::to_string(&data).expect("msg: &str");
-            let json_data = json::parse(deserialized).expect("msg: &str");
+            let des = &serde_json::to_string(&data).expect("FATAL: Failed to deserialize data");
+            let json_data = json::parse(des).expect("FATAL: Failed to parse data");
             let res = json::object! { "success" => true, "data" => json_data }.dump();
             HttpResponse::Ok()
                 .content_type("application/json")
