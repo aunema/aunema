@@ -1,18 +1,58 @@
 use actix_web::HttpResponse;
+use std::error::Error;
+use validator::ValidationErrors;
 
-pub fn handle(result: Result<json::JsonValue, Vec<String>>) -> HttpResponse {
+#[macro_export]
+macro_rules! handle_errors {
+    ($var:expr) => {
+        match handler::to_errors($var.validate()) {
+            Some(res) => {
+                return res;
+            }
+            None => (),
+        }
+    };
+}
+
+pub fn to_errors(result: Result<(), ValidationErrors>) -> Option<HttpResponse> {
+    match result {
+        Ok(_) => None,
+        Err(val_errors) => {
+            let mut errors: Vec<String> = vec![];
+            for (key, value) in &val_errors.field_errors() {
+                for inner in value {
+                    errors.push(format!("Field {} failed with {} error", key, inner.code));
+                }
+            }
+            let res = json::object! { "success" => false, "errors" => errors }.dump();
+            Some(
+                HttpResponse::InternalServerError()
+                    .content_type("application/json")
+                    .body(res),
+            )
+        }
+    }
+}
+
+pub fn to_json<T>(result: Result<T, Box<dyn Error>>) -> HttpResponse
+where
+    T: Sized + serde::Serialize,
+{
     match result {
         Ok(data) => {
-            let res = json::object! { "success" => true, "data" => data }.dump();
+            let deserialized = &serde_json::to_string(&data).expect("msg: &str");
+            let json_data = json::parse(deserialized).expect("msg: &str");
+            let res = json::object! { "success" => true, "data" => json_data }.dump();
             HttpResponse::Ok()
                 .content_type("application/json")
                 .body(res)
-        },
-        Err(errors) => {
-            let res = json::object! { "success" => false, "errors" => errors }.dump();
+        }
+        Err(err) => {
+            let res =
+                json::object! { "success" => false, "errors" => vec![err.to_string()] }.dump();
             HttpResponse::InternalServerError()
                 .content_type("application/json")
                 .body(res)
-        },
+        }
     }
 }

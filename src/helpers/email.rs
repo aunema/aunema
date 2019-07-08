@@ -1,8 +1,8 @@
 use crate::config::Config;
 
 use sendgrid::v3::{Email, Message, Personalization, Sender};
-use std::sync::Arc;
 use std::error::Error;
+use std::sync::Arc;
 
 #[derive(Clone, Debug)]
 pub struct Mailer {
@@ -10,7 +10,7 @@ pub struct Mailer {
     pub sender: Arc<Sender>,
 }
 
-pub fn init_mailer(cnfg: &Arc<Config>) -> Result<Arc<Mailer>, Box<Error>> {
+pub fn init_mailer(cnfg: &Arc<Config>) -> Result<Arc<Mailer>, Box<dyn Error>> {
     let csg = match cnfg.sendgrid.clone() {
         Some(csg) => csg,
         None => return Err(Box::from("Sendgrid is not initialized")),
@@ -24,7 +24,7 @@ pub fn init_mailer(cnfg: &Arc<Config>) -> Result<Arc<Mailer>, Box<Error>> {
 }
 
 impl Mailer {
-    pub fn send(&self, to: String, template_id: String) -> Result<(), Box<Error>> {
+    pub fn send(&self, to: String, template_id: String) -> Result<(), Box<dyn Error>> {
         let pln = Personalization::new().add_to(Email::new().set_email(&to));
         let csg = match self.cnfg.sendgrid.clone() {
             Some(csg) => csg,

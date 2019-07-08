@@ -1,4 +1,5 @@
 use envy::{from_env, prefixed};
+use std::error::Error;
 use std::sync::Arc;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -30,7 +31,7 @@ pub struct Sendgrid {
 }
 
 impl Config {
-    pub fn init() -> Result<Arc<Self>, Box<std::error::Error>> {
+    pub fn init() -> Result<Arc<Self>, Box<dyn Error>> {
         let mut cnfg = from_env::<Config>()?;
         let storage = prefixed("STORAGE_").from_env::<Storage>()?;
         cnfg.storage = Some(storage);
