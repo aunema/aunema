@@ -26,9 +26,6 @@ pub fn add_link(
     handler::to_json(result)
 }
 
-// Todo: Fix deserialization errors to send as json
-// Todo: Add default values
-
 #[derive(Debug, Serialize, Deserialize, Validate)]
 pub struct GetLinksParams {
     social_network: SocialNetwork,

@@ -1,4 +1,5 @@
-use actix_web::HttpResponse;
+use actix_web::middleware::errhandlers::ErrorHandlerResponse;
+use actix_web::{dev, HttpResponse, Result};
 use std::error::Error;
 use validator::ValidationErrors;
 
@@ -55,4 +56,14 @@ where
                 .body(res)
         }
     }
+}
+
+pub fn bad_request_handler<B>(res: dev::ServiceResponse<B>) -> Result<ErrorHandlerResponse<B>> {
+    // Todo: Handle 400 errors - send body as json {"success": false, "errors": [...]}
+    // let err = format!("Error {:?}", tmp);
+    // res.response_mut().headers_mut().insert(
+    //     http::header::CONTENT_TYPE,
+    //     http::HeaderValue::from_str(&err).unwrap(),
+    // );
+    Ok(ErrorHandlerResponse::Response(res))
 }

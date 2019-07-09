@@ -2,9 +2,10 @@ pub mod provider;
 
 use crate::config::Config;
 use crate::helpers::database;
-use crate::helpers::email;
+use crate::helpers::{email, handler};
 
-use actix_web::{web, App, HttpServer};
+use actix_web::middleware::errhandlers::ErrorHandlers;
+use actix_web::{http, web, App, HttpServer};
 use std::sync::Arc;
 
 pub fn init_services(cnfg: Arc<Config>) {
@@ -22,7 +23,12 @@ pub fn init_services(cnfg: Arc<Config>) {
 
         let api = web::scope("/api/v1").service(provider_dlr_rest);
 
-        App::new().service(api)
+        App::new()
+            .wrap(
+                ErrorHandlers::new()
+                    .handler(http::StatusCode::BAD_REQUEST, handler::bad_request_handler),
+            )
+            .service(api)
     };
 
     HttpServer::new(app)
