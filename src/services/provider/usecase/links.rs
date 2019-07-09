@@ -54,7 +54,7 @@ impl super::ProviderUsecase {
             social_network,
             created_at: Utc::now().timestamp(),
         };
-        client.execute(
+        let result = client.execute(
             "INSERT INTO links VALUES($1, $2, $3, $4)",
             &[
                 &link.id,
@@ -63,7 +63,19 @@ impl super::ProviderUsecase {
                 &link.created_at,
             ],
         )?;
-        Ok(link)
+        match result {
+            1 => Ok(link),
+            _ => Err(Box::from("Failed to add link")),
+        }
+    }
+
+    pub fn remove_link(&self, id: uuid::Uuid) -> Result<(), Box<dyn Error>> {
+        let client = self.db_pool.get()?;
+        let result = client.execute("DELETE FROM links WHERE id = $1", &[&id])?;
+        match result {
+            1 => Ok(()),
+            _ => Err(Box::from("Link not found")),
+        }
     }
 
     pub fn get_link_by_data(&self, data: String) -> Result<Option<Link>, Box<dyn Error>> {

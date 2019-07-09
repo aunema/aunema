@@ -3,8 +3,10 @@ mod links;
 
 use crate::config::Config;
 use crate::helpers::email::Mailer;
+use crate::models::SocialNetwork;
 use crate::services::provider::usecase::ProviderUsecase;
 
+use std::error::Error;
 use std::sync::Arc;
 
 #[derive(Clone, Debug)]
@@ -34,5 +36,12 @@ impl ProviderController {
             .expect("Failed to send mail");
     }
 
-    pub fn fetch_reddit_posts(&self) {}
+    pub fn fetch_reddit_posts(&self) -> Result<(), Box<dyn Error>> {
+        let links = self.provider_ucs.get_links(SocialNetwork::Reddit, 5, 0)?;
+        for link in links {
+            println!("Link: {:?}", link.data);
+            // Todo: Fetch post image/animated/video
+        }
+        Ok(())
+    }
 }

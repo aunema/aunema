@@ -1,3 +1,5 @@
+use crate::helpers::handler;
+
 use actix_web::{web, HttpResponse, Scope};
 
 pub fn init_endpoints() -> Scope {
@@ -5,7 +7,6 @@ pub fn init_endpoints() -> Scope {
 }
 
 pub fn fetch(data: web::Data<super::ProviderRest>) -> HttpResponse {
-    data.provider_cnr.fetch_reddit_posts();
-    let res = json::object! { "success" => true }.dump();
-    HttpResponse::Ok().body(res)
+    let result = data.provider_cnr.fetch_reddit_posts();
+    handler::to_json(result)
 }

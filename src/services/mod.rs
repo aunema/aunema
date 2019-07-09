@@ -1,8 +1,7 @@
 pub mod provider;
 
 use crate::config::Config;
-use crate::helpers::database;
-use crate::helpers::{email, handler};
+use crate::helpers::{database, email, handler};
 
 use actix_web::middleware::errhandlers::ErrorHandlers;
 use actix_web::{http, web, App, HttpServer};

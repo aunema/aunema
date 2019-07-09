@@ -15,6 +15,10 @@ impl super::ProviderController {
         self.provider_ucs.add_link(data, social_network)
     }
 
+    pub fn remove_link(&self, id: uuid::Uuid) -> Result<(), Box<dyn Error>> {
+        self.provider_ucs.remove_link(id)
+    }
+
     pub fn get_links(
         &self,
         social_network: SocialNetwork,
