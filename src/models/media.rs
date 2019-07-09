@@ -1,5 +1,4 @@
-#![allow(dead_code)]
-
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Media {
     pub id: uuid::Uuid,
     pub unique_identifier: String,

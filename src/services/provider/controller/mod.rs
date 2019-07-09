@@ -1,3 +1,4 @@
+mod api;
 mod image;
 mod links;
 
@@ -36,12 +37,28 @@ impl ProviderController {
             .expect("Failed to send mail");
     }
 
-    pub fn fetch_reddit_posts(&self) -> Result<(), Box<dyn Error>> {
-        let links = self.provider_ucs.get_links(SocialNetwork::Reddit, 5, 0)?;
-        for link in links {
-            println!("Link: {:?}", link.data);
-            // Todo: Fetch post image/animated/video
+    pub fn fetch_media(&self, social_network: SocialNetwork) -> Result<(), Box<dyn Error>> {
+        let mut media = self.fetch_data(social_network)?;
+        let uids: Vec<String> = media
+            .iter()
+            .map(|value| value.unique_identifier.clone())
+            .collect();
+        let existing_media = self.provider_ucs.get_media_by_uids(uids)?;
+
+        media.retain(|media_item| {
+            match existing_media
+                .iter()
+                .find(|item| item.unique_identifier == media_item.unique_identifier)
+            {
+                Some(_) => false,
+                None => true,
+            }
+        });
+        if media.len() <= 0 {
+            return Err(Box::from("Fetch returned only repeats"));
         }
+
+        // Todo: Save media to database
         Ok(())
     }
 }

@@ -21,20 +21,14 @@ impl super::ProviderUsecase {
                 ORDER BY created_at
                 LIMIT $2 OFFSET $3
             ",
-                &[
-                    &(social_network.clone() as i64),
-                    &(limit as i64),
-                    &(offset as i64),
-                ],
+                &[&(social_network as i64), &(limit as i64), &(offset as i64)],
             )
             .unwrap()
         {
-            let sn_int: i64 = row.get(2);
-            let sn: SocialNetwork = serde_json::from_str(&sn_int.to_string())?;
             let link = Link {
                 id: row.get(0),
                 data: row.get(1),
-                social_network: sn,
+                social_network: row.get(2),
                 created_at: row.get(3),
             };
             links.push(link);
@@ -59,7 +53,7 @@ impl super::ProviderUsecase {
             &[
                 &link.id,
                 &link.data,
-                &(link.social_network.clone() as i64),
+                &(link.social_network as i64),
                 &link.created_at,
             ],
         )?;
@@ -87,12 +81,10 @@ impl super::ProviderUsecase {
             )
             .unwrap()
         {
-            let sn_int: i64 = row.get(2);
-            let sn: SocialNetwork = serde_json::from_str(&sn_int.to_string())?;
             let link = Link {
                 id: row.get(0),
                 data: row.get(1),
-                social_network: sn,
+                social_network: row.get(2),
                 created_at: row.get(3),
             };
             return Ok(Some(link));

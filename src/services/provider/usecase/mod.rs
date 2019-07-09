@@ -1,3 +1,4 @@
+mod media;
 mod links;
 
 use crate::config::Config;
