@@ -1,6 +1,7 @@
 use crate::models::{Media, MediaType, SocialNetwork, UseStatus};
 
 use chrono::Utc;
+use postgres::types::ToSql;
 use std::error::Error;
 
 impl super::ProviderUsecase {
@@ -27,16 +28,6 @@ impl super::ProviderUsecase {
         let client = self.db_pool.get()?;
         let mut media: Vec<Media> = Vec::new();
 
-        // Todo: Fix these ugly lines
-        let mut in_uids = String::from("");
-        uids.iter().for_each(|value| {
-            if in_uids == "" {
-                in_uids += value;
-            } else {
-                in_uids += &format!(", {}", &value);
-            }
-        });
-
         for row in &client
             .query(
                 "
@@ -44,9 +35,9 @@ impl super::ProviderUsecase {
                     id, unique_identifier, duration, used_in,
                     use_status, social_network, media_type, created_at
                 FROM media
-                WHERE unique_identifier IN ($1)
+                WHERE unique_identifier = ANY($1)
             ",
-                &[&in_uids],
+                &[&uids],
             )
             .unwrap()
         {
@@ -63,5 +54,46 @@ impl super::ProviderUsecase {
             media.push(saved_media);
         }
         Ok(media)
+    }
+
+    pub fn add_media(&self, media: Vec<Media>) -> Result<u64, Box<dyn Error>> {
+        let client = self.db_pool.get()?;
+
+        let mut items_count_in_struct = 0;
+        let mut media_items = vec![];
+        for media_item in media {
+            let items = media_item.to_sql_vec();
+            items_count_in_struct = items.len();
+            media_items.extend(items);
+        }
+        let values: Vec<&dyn ToSql> = media_items.iter_mut().map(|item| &**item).collect();
+
+        // Todo: Fix or move to template function
+        let mut query_values = String::from("VALUES(");
+        for (index, _) in values.iter().enumerate() {
+            let num = index + 1;
+            let sep = num % items_count_in_struct;
+            if sep == 0 {
+                query_values += &format!("${}), (", num);
+            } else {
+                query_values += &format!("${}, ", num);
+            }
+        }
+        query_values.truncate(query_values.len() - 3);
+
+        let result = client.execute(
+            &format!(
+                "INSERT INTO media (
+                id, unique_identifier, duration, used_in,
+                use_status, social_network, media_type, created_at
+            ) {}",
+                query_values
+            ),
+            values.as_slice(),
+        )?;
+        match result {
+            0 => Err(Box::from("Failed to add media")),
+            _ => Ok(result),
+        }
     }
 }

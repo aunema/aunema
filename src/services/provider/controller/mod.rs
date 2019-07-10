@@ -37,7 +37,7 @@ impl ProviderController {
             .expect("Failed to send mail");
     }
 
-    pub fn fetch_media(&self, social_network: SocialNetwork) -> Result<(), Box<dyn Error>> {
+    pub fn fetch_media(&self, social_network: SocialNetwork) -> Result<u64, Box<dyn Error>> {
         let mut media = self.fetch_data(social_network)?;
         let uids: Vec<String> = media
             .iter()
@@ -58,7 +58,7 @@ impl ProviderController {
             return Err(Box::from("Fetch returned only repeats"));
         }
 
-        // Todo: Save media to database
-        Ok(())
+        let count = self.provider_ucs.add_media(media)?;
+        Ok(count)
     }
 }

@@ -1,3 +1,5 @@
+use postgres::types::ToSql;
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Media {
     pub id: uuid::Uuid,
@@ -11,4 +13,19 @@ pub struct Media {
     pub media_type: super::MediaType,
 
     pub created_at: i64,
+}
+
+impl Media {
+    pub fn to_sql_vec<'a>(&self) -> Vec<Box<dyn ToSql>> {
+        let mut sql_vec: Vec<Box<dyn ToSql>> = vec![];
+        sql_vec.push(Box::new(self.id));
+        sql_vec.push(Box::new(self.unique_identifier.clone()));
+        sql_vec.push(Box::new(self.duration));
+        sql_vec.push(Box::new(self.used_in));
+        sql_vec.push(Box::new(self.use_status as i64));
+        sql_vec.push(Box::new(self.social_network as i64));
+        sql_vec.push(Box::new(self.media_type as i64));
+        sql_vec.push(Box::new(self.created_at));
+        sql_vec
+    }
 }
