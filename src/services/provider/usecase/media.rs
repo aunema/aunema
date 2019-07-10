@@ -8,6 +8,7 @@ impl super::ProviderUsecase {
     pub fn create_media(
         &self,
         uid: String,
+        url: String,
         use_status: UseStatus,
         social_network: SocialNetwork,
         media_type: MediaType,
@@ -15,6 +16,7 @@ impl super::ProviderUsecase {
         Media {
             id: uuid::Uuid::new_v4(),
             unique_identifier: uid,
+            url,
             duration: None,
             used_in: None,
             use_status,
@@ -27,12 +29,11 @@ impl super::ProviderUsecase {
     pub fn get_media_by_uids(&self, uids: Vec<String>) -> Result<Vec<Media>, Box<dyn Error>> {
         let client = self.db_pool.get()?;
         let mut media: Vec<Media> = Vec::new();
-
         for row in &client
             .query(
                 "
                 SELECT
-                    id, unique_identifier, duration, used_in,
+                    id, unique_identifier, url, duration, used_in,
                     use_status, social_network, media_type, created_at
                 FROM media
                 WHERE unique_identifier = ANY($1)
@@ -44,12 +45,13 @@ impl super::ProviderUsecase {
             let saved_media = Media {
                 id: row.get(0),
                 unique_identifier: row.get(1),
-                duration: row.get(2),
-                used_in: row.get(3),
-                use_status: row.get(4),
-                social_network: row.get(5),
-                media_type: row.get(6),
-                created_at: row.get(7),
+                url: row.get(2),
+                duration: row.get(3),
+                used_in: row.get(4),
+                use_status: row.get(5),
+                social_network: row.get(6),
+                media_type: row.get(7),
+                created_at: row.get(8),
             };
             media.push(saved_media);
         }
@@ -84,7 +86,7 @@ impl super::ProviderUsecase {
         let result = client.execute(
             &format!(
                 "INSERT INTO media (
-                id, unique_identifier, duration, used_in,
+                id, unique_identifier, url, duration, used_in,
                 use_status, social_network, media_type, created_at
             ) {}",
                 query_values

@@ -2,7 +2,8 @@
 pub struct Link {
     pub id: uuid::Uuid,
 
-    pub data: String,
+    pub provider: String,
+    pub media_limit: i16,
     pub social_network: super::SocialNetwork,
 
     pub created_at: i64,

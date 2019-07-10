@@ -11,7 +11,9 @@ impl super::ProviderController {
 
         let mut result = vec![];
         for link in links {
-            let res: RedditPosts = reqwest::get(&link.data)?.json()?;
+            // Todo: Add support other social networks
+            let url = format!("https://www.reddit.com/r/{}/top.json?limit={}", link.provider, link.media_limit);
+            let res: RedditPosts = reqwest::get(&url)?.json()?;
 
             for post in res.data.children {
                 let data = post.data;
@@ -20,6 +22,7 @@ impl super::ProviderController {
                 if !data.is_video && data.domain == "i.redd.it" {
                     let new_media = self.provider_ucs.create_media(
                         data.id,
+                        data.url,
                         UseStatus::Normal,
                         social_network,
                         MediaType::Image,

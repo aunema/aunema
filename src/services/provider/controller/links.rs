@@ -5,14 +5,15 @@ use std::error::Error;
 impl super::ProviderController {
     pub fn add_link(
         &self,
-        data: String,
+        provider: String,
+        media_limit: i16,
         social_network: SocialNetwork,
     ) -> Result<Link, Box<dyn Error>> {
-        match self.provider_ucs.get_link_by_data(data.clone())? {
+        match self.provider_ucs.get_link_by_provider(provider.clone())? {
             Some(_) => return Err(Box::from("Link already exists")),
             None => (),
         };
-        self.provider_ucs.add_link(data, social_network)
+        self.provider_ucs.add_link(provider, media_limit, social_network)
     }
 
     pub fn remove_link(&self, id: uuid::Uuid) -> Result<(), Box<dyn Error>> {

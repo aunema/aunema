@@ -13,8 +13,10 @@ pub fn init_endpoints() -> Scope {
 
 #[derive(Debug, Serialize, Deserialize, Validate)]
 pub struct AddLinkBody {
-    #[validate(length(min = "5", max = "300"))]
-    data: String,
+    #[validate(length(min = "3", max = "300"))]
+    provider: String,
+    #[validate(range(min = "1", max = "100"))]
+    limit: i16,
     social_network: SocialNetwork,
 }
 
@@ -23,9 +25,11 @@ pub fn add_link(
     data: web::Data<super::ProviderRest>,
 ) -> HttpResponse {
     crate::validate_errors!(body);
-    let result = data
-        .provider_cnr
-        .add_link(body.data.clone(), body.social_network.clone());
+    let result = data.provider_cnr.add_link(
+        body.provider.clone(),
+        body.limit.clone(),
+        body.social_network.clone(),
+    );
     handler::to_json(result)
 }
 

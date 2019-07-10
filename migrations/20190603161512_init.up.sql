@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS media
 (
     id UUID PRIMARY KEY,
     unique_identifier TEXT NOT NULL UNIQUE,
+    url TEXT NOT NULL,
 
     duration BIGINT NULL,
     used_in UUID NULL,
@@ -17,7 +18,8 @@ CREATE TABLE IF NOT EXISTS links
 (
     id UUID PRIMARY KEY,
 
-    data TEXT NOT NULL UNIQUE,
+    provider TEXT NOT NULL UNIQUE,
+    media_limit SMALLINT NOT NULL,
     social_network SMALLINT NOT NULL,
 
     created_at BIGINT NOT NULL

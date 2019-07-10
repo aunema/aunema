@@ -15,7 +15,7 @@ impl super::ProviderUsecase {
         for row in &client
             .query(
                 "
-                SELECT id, data, social_network, created_at
+                SELECT id, provider, media_limit, social_network, created_at
                 FROM links
                 WHERE social_network = $1
                 ORDER BY created_at
@@ -25,11 +25,13 @@ impl super::ProviderUsecase {
             )
             .unwrap()
         {
+            let media_limit: i64 = row.get(2);
             let link = Link {
                 id: row.get(0),
-                data: row.get(1),
-                social_network: row.get(2),
-                created_at: row.get(3),
+                provider: row.get(1),
+                media_limit: media_limit as i16,
+                social_network: row.get(3),
+                created_at: row.get(4),
             };
             links.push(link);
         }
@@ -38,21 +40,24 @@ impl super::ProviderUsecase {
 
     pub fn add_link(
         &self,
-        data: String,
+        provider: String,
+        media_limit: i16,
         social_network: SocialNetwork,
     ) -> Result<Link, Box<dyn Error>> {
         let client = self.db_pool.get()?;
         let link = Link {
             id: uuid::Uuid::new_v4(),
-            data,
+            provider,
+            media_limit,
             social_network,
             created_at: Utc::now().timestamp(),
         };
         let result = client.execute(
-            "INSERT INTO links VALUES($1, $2, $3, $4)",
+            "INSERT INTO links VALUES($1, $2, $3, $4, $5)",
             &[
                 &link.id,
-                &link.data,
+                &link.provider,
+                &(link.media_limit as i64),
                 &(link.social_network as i64),
                 &link.created_at,
             ],
@@ -72,20 +77,23 @@ impl super::ProviderUsecase {
         }
     }
 
-    pub fn get_link_by_data(&self, data: String) -> Result<Option<Link>, Box<dyn Error>> {
+    pub fn get_link_by_provider(&self, provider: String) -> Result<Option<Link>, Box<dyn Error>> {
         let client = self.db_pool.get()?;
         for row in &client
             .query(
-                "SELECT id, data, social_network, created_at FROM links WHERE data = $1",
-                &[&data],
+                "SELECT id, provider, media_limit, social_network, created_at
+                FROM links WHERE provider = $1",
+                &[&provider],
             )
             .unwrap()
         {
+            let media_limit: i64 = row.get(2);
             let link = Link {
                 id: row.get(0),
-                data: row.get(1),
-                social_network: row.get(2),
-                created_at: row.get(3),
+                provider: row.get(1),
+                media_limit: media_limit as i16,
+                social_network: row.get(3),
+                created_at: row.get(4),
             };
             return Ok(Some(link));
         }
