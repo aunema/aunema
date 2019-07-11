@@ -6,7 +6,7 @@ use crate::helpers::database::Database;
 
 use std::sync::Arc;
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct ProviderUsecase {
     pub cnfg: Arc<Config>,
     pub db_pool: Database,

@@ -10,7 +10,7 @@ use crate::services::provider::usecase::ProviderUsecase;
 use std::error::Error;
 use std::sync::Arc;
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct ProviderController {
     pub cnfg: Arc<Config>,
     pub provider_ucs: Arc<ProviderUsecase>,

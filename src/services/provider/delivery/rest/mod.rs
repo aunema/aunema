@@ -7,7 +7,7 @@ use crate::services::provider::controller::ProviderController;
 use actix_web::{web, HttpResponse, Scope};
 use std::sync::Arc;
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct ProviderRest {
     pub cnfg: Arc<Config>,
     pub provider_cnr: Arc<ProviderController>,

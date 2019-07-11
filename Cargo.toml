@@ -14,19 +14,20 @@ json = "*"
 envy = "0.4"
 validator = "0.8.0"
 validator_derive = "0.8.0"
-futures = "0.1.26"
 reqwest = "0.9.17"
+futures = "0.1.27"
+chrono = "0.4"
+
+tokio = { version = "0.1.7", default-features = false }
+uuid = { version = "0.5", features = ["serde", "v4"] }
 
 r2d2_postgres = "0.14.0"
 postgres = { version = "0.15", features = ["with-uuid"] }
 postgres-protocol = "0.3.0"
 
-uuid = { version = "0.5", features = ["serde", "v4"] }
-chrono = "0.4"
-
 actix-web = "1.0.0"
 sendgrid = "0.8.1"
-telebot = "0.3.0"
+carapax = "0.2"
 
 [[bin]]
 name = "aunema"
