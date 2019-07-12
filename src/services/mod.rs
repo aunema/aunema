@@ -3,6 +3,7 @@ pub mod provider;
 use crate::config::Config;
 use crate::helpers::{api, database, email, handler};
 
+use actix::System;
 use actix_web::middleware::errhandlers::ErrorHandlers;
 use actix_web::{http, web, App, HttpServer};
 use carapax::prelude::{UpdateMethod, UpdatesStream};
@@ -12,6 +13,7 @@ pub fn init_services(cnfg: Arc<Config>) {
     let addr = format!("0.0.0.0:{}", cnfg.server_port);
     let token = cnfg.telegram_token.clone();
 
+    let sys = System::new("aunema");
     let db_pool = database::init_pool(&cnfg, 5).expect("Failed to init database connection");
     let mailer = email::init_mailer(&cnfg).expect("Failed to init mailer");
     let mut telegram = api::init_telegram(token).expect("Failed to init telegram api");
@@ -34,17 +36,13 @@ pub fn init_services(cnfg: Arc<Config>) {
             .service(api)
     };
 
-    tokio::run(futures::lazy(|| {
-        tokio::spawn(telegram.app.run(
-            telegram.api.clone(),
-            UpdateMethod::poll(UpdatesStream::new(telegram.api.clone())),
-        ));
-        // Todo: Make it work
-        HttpServer::new(app)
-            .bind(addr)
-            .expect("Failed to bind port for the http server")
-            .run()
-            .expect("Failed to run http server");
-        Ok(())
-    }));
+    actix::spawn(telegram.app.run(
+        telegram.api.clone(),
+        UpdateMethod::poll(UpdatesStream::new(telegram.api.clone())),
+    ));
+    HttpServer::new(app)
+        .bind(addr)
+        .expect("Failed to bind port for the http server")
+        .start();
+    sys.run().expect("Failed to run http server");
 }
