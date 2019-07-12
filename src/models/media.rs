@@ -4,7 +4,7 @@ use postgres::types::ToSql;
 pub struct Media {
     pub id: uuid::Uuid,
     pub unique_identifier: String,
-    pub url: String,
+    pub data_url: Option<String>,
 
     pub duration: Option<i64>,
     pub used_in: Option<uuid::Uuid>,
@@ -21,7 +21,7 @@ impl Media {
         let mut sql_vec: Vec<Box<dyn ToSql>> = vec![];
         sql_vec.push(Box::new(self.id));
         sql_vec.push(Box::new(self.unique_identifier.clone()));
-        sql_vec.push(Box::new(self.url.clone()));
+        sql_vec.push(Box::new(self.data_url.clone()));
         sql_vec.push(Box::new(self.duration));
         sql_vec.push(Box::new(self.used_in));
         sql_vec.push(Box::new(self.use_status as i64));

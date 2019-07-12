@@ -22,7 +22,7 @@ impl super::ProviderController {
                 if !data.is_video && data.domain == "i.redd.it" {
                     let new_media = self.provider_ucs.create_media(
                         data.id,
-                        data.url,
+                        Some(data.url),
                         UseStatus::Normal,
                         social_network,
                         MediaType::Image,

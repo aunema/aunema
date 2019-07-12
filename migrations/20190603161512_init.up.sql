@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS media
 (
     id UUID PRIMARY KEY,
     unique_identifier TEXT NOT NULL UNIQUE,
-    url TEXT NOT NULL,
+    data_url TEXT NULL,
 
     duration BIGINT NULL,
     used_in UUID NULL,

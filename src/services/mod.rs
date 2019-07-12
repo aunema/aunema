@@ -44,5 +44,5 @@ pub fn init_services(cnfg: Arc<Config>) {
         .bind(addr)
         .expect("Failed to bind port for the http server")
         .start();
-    sys.run().expect("Failed to run http server");
+    sys.run().expect("Failed to run actix system");
 }

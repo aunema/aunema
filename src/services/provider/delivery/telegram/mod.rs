@@ -1,7 +1,9 @@
 use crate::config::Config as AppConfig;
 use crate::services::provider::controller::ProviderController;
 
-use carapax::prelude::*;
+use carapax::prelude::{
+    Api, App, Context, Handler, HandlerFuture, HandlerResult, Message, SendMessage,
+};
 use futures::{
     future::{self, Either},
     Future,
@@ -19,26 +21,32 @@ pub fn init(
     provider_cnr: &Arc<ProviderController>,
     telegram_app: App,
 ) -> App {
-    let _provider = ProviderTelegram {
+    let provider = ProviderTelegram {
         cnfg: cnfg.clone(),
         provider_cnr: provider_cnr.clone(),
     };
 
-    telegram_app.add_handler(FnHandler::from(handle_message))
+    telegram_app.add_handler(provider)
 }
 
-pub fn handle_message(context: &mut Context, message: Message) -> HandlerFuture {
-    println!("got a message: {:?}\n", message);
-    let api = context.get::<Api>().clone();
-    HandlerFuture::new(future::lazy(move || match message.get_text() {
-        Some(text) => {
-            let chat_id = message.get_chat_id();
-            let method = SendMessage::new(chat_id, text.data.clone());
-            Either::A(api.execute(method).then(|x| {
-                println!("sendMessage result: {:?}\n", x);
-                Ok(HandlerResult::Continue)
-            }))
-        }
-        None => Either::B(future::ok(HandlerResult::Continue)),
-    }))
+impl Handler for ProviderTelegram {
+    type Input = Message;
+    type Output = HandlerFuture;
+
+    fn handle(&self, ctx: &mut Context, msg: Self::Input) -> Self::Output {
+        println!("Got a message");
+        let api = ctx.get::<Api>().clone();
+        HandlerFuture::new(future::lazy(move || match msg.get_text() {
+            Some(text) => {
+                // Todo: Handle provider api
+                let chat_id = msg.get_chat_id();
+                let method = SendMessage::new(chat_id, text.data.clone());
+                Either::A(api.execute(method).then(|x| {
+                    println!("Send message result: {:?}\n", x);
+                    Ok(HandlerResult::Continue)
+                }))
+            }
+            None => Either::B(future::ok(HandlerResult::Continue)),
+        }))
+    }
 }
