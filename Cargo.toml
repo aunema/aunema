@@ -17,6 +17,7 @@ validator_derive = "0.8.0"
 reqwest = "0.9.17"
 futures = "0.1.27"
 chrono = "0.4"
+failure = "0.1.5"
 
 uuid = { version = "0.5", features = ["serde", "v4"] }
 
