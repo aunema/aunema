@@ -22,7 +22,7 @@ pub fn init_services(cnfg: Arc<Config>) {
 
     let provider_cnr = provider::controller::init(&cnfg, &provider_ucs, &mailer);
 
-    telegram.app = provider::delivery::telegram::init(&cnfg, &provider_cnr, telegram.app);
+    telegram = provider::delivery::telegram::init(&cnfg, &provider_cnr, telegram);
     let app = move || {
         let provider_dlr_rest = provider::delivery::rest::init(&cnfg, &provider_cnr);
 
@@ -36,6 +36,7 @@ pub fn init_services(cnfg: Arc<Config>) {
             .service(api)
     };
 
+    telegram.app = telegram.app.add_handler(telegram.handler);
     actix::spawn(telegram.app.run(
         telegram.api.clone(),
         UpdateMethod::poll(UpdatesStream::new(telegram.api.clone())),
