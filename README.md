@@ -1,6 +1,6 @@
-# Automated network manager
+# Autonomous network-manager
 
-Project `aunema` - stands for automated management of social networks
+Project `aunema` - is autonomous manager of social networks
 
 ## Usage:
 
