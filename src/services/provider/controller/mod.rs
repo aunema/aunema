@@ -61,4 +61,8 @@ impl ProviderController {
         let count = self.provider_ucs.add_media(media)?;
         Ok(count)
     }
+
+    pub fn bounce(&self) -> &'static str {
+        "Bounce"
+    }
 }

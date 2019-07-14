@@ -1,4 +1,5 @@
 pub mod provider;
+pub mod publisher;
 
 use crate::config::Config;
 use crate::helpers::{api, database, email, handler};
@@ -23,6 +24,7 @@ pub fn init_services(cnfg: Arc<Config>) {
     let provider_cnr = provider::controller::init(&cnfg, &provider_ucs, &mailer);
 
     telegram = provider::delivery::telegram::init(&cnfg, &provider_cnr, telegram);
+    telegram = publisher::delivery::telegram::init(&cnfg, telegram);
     let app = move || {
         let provider_dlr_rest = provider::delivery::rest::init(&cnfg, &provider_cnr);
 

@@ -1,6 +1,5 @@
 use crate::config::Config as AppConfig;
 use crate::helpers::api::Telegram;
-use crate::services::provider::controller::ProviderController;
 
 use carapax::prelude::{
     Api, Context, Handler, HandlerFuture, HandlerResult, Message, MessageData, SendMessage,
@@ -9,25 +8,17 @@ use futures::{future, Future};
 use std::sync::Arc;
 
 #[derive(Clone)]
-pub struct ProviderTelegram {
+pub struct PublisherTelegram {
     pub cnfg: Arc<AppConfig>,
-    pub provider_cnr: Arc<ProviderController>,
 }
 
-pub fn init(
-    cnfg: &Arc<AppConfig>,
-    provider_cnr: &Arc<ProviderController>,
-    mut telegram: Telegram,
-) -> Telegram {
-    let provider = ProviderTelegram {
-        cnfg: cnfg.clone(),
-        provider_cnr: provider_cnr.clone(),
-    };
-    telegram.app = telegram.app.add_handler(provider);
+pub fn init(cnfg: &Arc<AppConfig>, mut telegram: Telegram) -> Telegram {
+    let publisher = PublisherTelegram { cnfg: cnfg.clone() };
+    telegram.app = telegram.app.add_handler(publisher);
     telegram
 }
 
-impl Handler for ProviderTelegram {
+impl Handler for PublisherTelegram {
     type Input = Message;
     type Output = HandlerFuture;
 
@@ -52,7 +43,7 @@ impl Handler for ProviderTelegram {
     }
 }
 
-impl ProviderTelegram {
+impl PublisherTelegram {
     pub fn handle_commands(
         &self,
         _api: &Api,
@@ -60,11 +51,9 @@ impl ProviderTelegram {
         command: String,
     ) -> Option<SendMessage> {
         match command.as_ref() {
-            "/bounce" => {
-                let bounce_result = self.provider_cnr.bounce();
-                let result = format!("Result: {}", bounce_result);
+            "/publish" => {
                 let chat_id = msg.get_chat_id();
-                Some(SendMessage::new(chat_id, result).reply_to_message_id(msg.id))
+                Some(SendMessage::new(chat_id, "I can't").reply_to_message_id(msg.id))
             }
             _ => None,
         }
