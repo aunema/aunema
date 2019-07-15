@@ -24,9 +24,9 @@ impl Media {
         sql_vec.push(Box::new(self.data_url.clone()));
         sql_vec.push(Box::new(self.duration));
         sql_vec.push(Box::new(self.used_in));
-        sql_vec.push(Box::new(self.use_status as i64));
-        sql_vec.push(Box::new(self.social_network as i64));
-        sql_vec.push(Box::new(self.media_type as i64));
+        sql_vec.push(Box::new(self.use_status));
+        sql_vec.push(Box::new(self.social_network));
+        sql_vec.push(Box::new(self.media_type));
         sql_vec.push(Box::new(self.created_at));
         sql_vec
     }

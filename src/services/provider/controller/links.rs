@@ -6,7 +6,7 @@ impl super::ProviderController {
     pub fn add_link(
         &self,
         provider: String,
-        media_limit: i16,
+        media_limit: u16,
         social_network: SocialNetwork,
     ) -> Result<Link, Box<dyn Error>> {
         match self.provider_ucs.get_link_by_provider(provider.clone())? {

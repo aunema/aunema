@@ -16,7 +16,7 @@ pub struct AddLinkBody {
     #[validate(length(min = "3", max = "300"))]
     provider: String,
     #[validate(range(min = "1", max = "100"))]
-    limit: i16,
+    limit: u16,
     social_network: SocialNetwork,
 }
 

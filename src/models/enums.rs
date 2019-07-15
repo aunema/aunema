@@ -1,9 +1,9 @@
-use postgres::types::{FromSql, ToSql, Type};
+use postgres::types::{FromSql, IsNull, ToSql, Type};
 use postgres_protocol::types;
 use std::error::Error;
 
 #[derive(Copy, Clone, Debug, Deserialize_repr, Serialize_repr)]
-#[repr(u8)]
+#[repr(u16)]
 pub enum UseStatus {
     Used = 0,
     Normal = 1,
@@ -24,8 +24,24 @@ impl FromSql for UseStatus {
     }
 }
 
+impl ToSql for UseStatus {
+    fn to_sql(&self, _: &Type, out: &mut Vec<u8>) -> Result<IsNull, Box<dyn Error + Sync + Send>>
+    where
+        Self: Sized,
+    {
+        types::int8_to_sql(*self as i64, out);
+        Ok(IsNull::No)
+    }
+
+    fn accepts(ty: &Type) -> bool {
+        <i64 as ToSql>::accepts(ty)
+    }
+
+    to_sql_checked!();
+}
+
 #[derive(Copy, Clone, Debug, Deserialize_repr, Serialize_repr)]
-#[repr(u8)]
+#[repr(u16)]
 pub enum SocialNetwork {
     Reddit = 0,
 }
@@ -43,8 +59,24 @@ impl FromSql for SocialNetwork {
     }
 }
 
+impl ToSql for SocialNetwork {
+    fn to_sql(&self, _: &Type, out: &mut Vec<u8>) -> Result<IsNull, Box<dyn Error + Sync + Send>>
+    where
+        Self: Sized,
+    {
+        types::int8_to_sql(*self as i64, out);
+        Ok(IsNull::No)
+    }
+
+    fn accepts(ty: &Type) -> bool {
+        <i64 as ToSql>::accepts(ty)
+    }
+
+    to_sql_checked!();
+}
+
 #[derive(Copy, Clone, Debug, Deserialize_repr, Serialize_repr)]
-#[repr(u8)]
+#[repr(u16)]
 pub enum MediaType {
     Image = 0,
     Animated = 1,
@@ -62,4 +94,20 @@ impl FromSql for MediaType {
     fn accepts(ty: &Type) -> bool {
         <i64 as ToSql>::accepts(ty)
     }
+}
+
+impl ToSql for MediaType {
+    fn to_sql(&self, _: &Type, out: &mut Vec<u8>) -> Result<IsNull, Box<dyn Error + Sync + Send>>
+    where
+        Self: Sized,
+    {
+        types::int8_to_sql(*self as i64, out);
+        Ok(IsNull::No)
+    }
+
+    fn accepts(ty: &Type) -> bool {
+        <i64 as ToSql>::accepts(ty)
+    }
+
+    to_sql_checked!();
 }

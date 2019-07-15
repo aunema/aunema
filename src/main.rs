@@ -6,6 +6,8 @@ extern crate serde_derive;
 extern crate serde_repr;
 #[macro_use]
 extern crate validator_derive;
+#[macro_use]
+extern crate postgres;
 
 mod config;
 mod helpers;

@@ -29,7 +29,7 @@ impl super::ProviderUsecase {
             let link = Link {
                 id: row.get(0),
                 provider: row.get(1),
-                media_limit: media_limit as i16,
+                media_limit: media_limit as u16,
                 social_network: row.get(3),
                 created_at: row.get(4),
             };
@@ -41,7 +41,7 @@ impl super::ProviderUsecase {
     pub fn add_link(
         &self,
         provider: String,
-        media_limit: i16,
+        media_limit: u16,
         social_network: SocialNetwork,
     ) -> Result<Link, Box<dyn Error>> {
         let client = self.db_pool.get()?;
@@ -58,7 +58,7 @@ impl super::ProviderUsecase {
                 &link.id,
                 &link.provider,
                 &(link.media_limit as i64),
-                &(link.social_network as i64),
+                &link.social_network,
                 &link.created_at,
             ],
         )?;
@@ -91,7 +91,7 @@ impl super::ProviderUsecase {
             let link = Link {
                 id: row.get(0),
                 provider: row.get(1),
-                media_limit: media_limit as i16,
+                media_limit: media_limit as u16,
                 social_network: row.get(3),
                 created_at: row.get(4),
             };

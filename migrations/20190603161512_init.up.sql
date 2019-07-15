@@ -1,26 +1,26 @@
 CREATE TABLE IF NOT EXISTS media
 (
     id UUID PRIMARY KEY,
-    unique_identifier TEXT NOT NULL UNIQUE,
-    data_url TEXT NULL,
+    unique_identifier STRING NOT NULL UNIQUE,
+    data_url STRING NULL,
 
-    duration BIGINT NULL,
+    duration INT8 NULL,
     used_in UUID NULL,
 
-    use_status SMALLINT NOT NULL,
-    social_network SMALLINT NOT NULL,
-    media_type SMALLINT NOT NULL,
+    use_status INT2 NOT NULL,
+    social_network INT2 NOT NULL,
+    media_type INT2 NOT NULL,
 
-    created_at BIGINT NOT NULL
+    created_at INT8 NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS links
 (
     id UUID PRIMARY KEY,
 
-    provider TEXT NOT NULL UNIQUE,
-    media_limit SMALLINT NOT NULL,
-    social_network SMALLINT NOT NULL,
+    provider STRING NOT NULL UNIQUE,
+    media_limit INT2 NOT NULL,
+    social_network INT2 NOT NULL,
 
-    created_at BIGINT NOT NULL
+    created_at INT8 NOT NULL
 );
