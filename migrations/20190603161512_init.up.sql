@@ -24,3 +24,17 @@ CREATE TABLE IF NOT EXISTS links
 
     created_at INT8 NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS publishers
+(
+    id UUID PRIMARY KEY,
+    chat_id INT8 NOT NULL,
+
+    social_network INT2 NOT NULL,
+    supported_media INT2[] NOT NULL,
+
+    caption STRING NULL,
+    repeats STRING[] NOT NULL,
+
+    created_at INT8 NOT NULL
+);

@@ -44,6 +44,7 @@ impl ToSql for UseStatus {
 #[repr(u16)]
 pub enum SocialNetwork {
     Reddit = 0,
+    Telegram = 1,
 }
 
 // Todo: Create derive macro

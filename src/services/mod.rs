@@ -20,11 +20,13 @@ pub fn init_services(cnfg: Arc<Config>) {
     let mut telegram = api::init_telegram(token).expect("Failed to init telegram api");
 
     let provider_ucs = provider::usecase::init(&cnfg, &db_pool);
+    let publisher_ucs = publisher::usecase::init(&cnfg, &db_pool);
 
     let provider_cnr = provider::controller::init(&cnfg, &provider_ucs, &mailer);
+    let publisher_cnr = publisher::controller::init(&cnfg, &publisher_ucs);
 
     telegram = provider::delivery::telegram::init(&cnfg, &provider_cnr, telegram);
-    telegram = publisher::delivery::telegram::init(&cnfg, telegram);
+    telegram = publisher::delivery::telegram::init(&cnfg, &publisher_cnr, telegram);
     let app = move || {
         let provider_dlr_rest = provider::delivery::rest::init(&cnfg, &provider_cnr);
 

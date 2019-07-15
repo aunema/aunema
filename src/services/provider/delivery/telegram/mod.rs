@@ -61,9 +61,9 @@ impl ProviderTelegram {
     ) -> Option<SendMessage> {
         match command.as_ref() {
             "/bounce" => {
-                let bounce_result = self.provider_cnr.bounce();
-                let result = format!("Result: {}", bounce_result);
                 let chat_id = msg.get_chat_id();
+                let bounce_result = self.provider_cnr.bounce();
+                let result = format!("Success: {}", bounce_result);
                 Some(SendMessage::new(chat_id, result).reply_to_message_id(msg.id))
             }
             _ => None,
