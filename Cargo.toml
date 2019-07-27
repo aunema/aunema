@@ -18,6 +18,9 @@ reqwest = "0.9.17"
 futures = "0.1.27"
 chrono = "0.4"
 failure = "0.1.5"
+enum-primitive-derive = "^0.1"
+num-traits = "^0.1"
+serde-enum-derive = "0.0.1"
 
 uuid = { version = "0.5", features = ["serde", "v4"] }
 

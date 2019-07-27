@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS publishers
     id UUID PRIMARY KEY,
     chat_id INT8 NOT NULL,
 
-    social_network INT2 NOT NULL,
+    social_network INT2 NOT NULL UNIQUE,
     supported_media INT2[] NOT NULL,
 
     caption STRING NULL,

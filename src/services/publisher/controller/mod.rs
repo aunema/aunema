@@ -22,13 +22,13 @@ pub fn init(cnfg: &Arc<Config>, publisher_ucs: &Arc<PublisherUsecase>) -> Arc<Pu
 impl PublisherController {
     pub fn add_publisher(
         &self,
-        chat_id: i64,
-        social_network: SocialNetwork,
-        supported_media: Vec<MediaType>,
-        caption: Option<String>,
-        repeats: Vec<String>,
+        _chat_id: i64,
+        _social_network: SocialNetwork,
+        _supported_media: Vec<MediaType>,
+        _caption: Option<String>,
+        _repeats: Vec<String>,
     ) -> Result<(), Box<dyn Error>> {
-        // Todo: Check if publisher already exists
+        // let publisher = self.publisher_ucs.get_publisher_by_social_network(social_network);
         // Todo: Add publisher
         Ok(())
     }
