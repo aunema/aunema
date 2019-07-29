@@ -23,7 +23,6 @@ services:
       SERVER_PORT: 8000
       DB_CONNECTION: "postgresql://root@db:26257"
 
-      STORAGE_AUTH: "./storage/auth"
       STORAGE_TEMPORARY: "./storage/videos/tmp"
       STORAGE_FINISHED: "./storage/videos/fin"
       STORAGE_ELEMENTS: "./storage/videos/elms"

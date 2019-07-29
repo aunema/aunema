@@ -12,7 +12,7 @@ use std::sync::Arc;
 
 pub fn init_services(cnfg: Arc<Config>) {
     let addr = format!("0.0.0.0:{}", cnfg.server_port);
-    let token = cnfg.telegram_token.clone();
+    let token = String::from("token");//cnfg.telegram_token.clone();
 
     let sys = System::new("aunema");
     let db_pool = database::init_pool(&cnfg, 5).expect("Failed to init database connection");

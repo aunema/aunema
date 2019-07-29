@@ -7,8 +7,6 @@ pub struct Config {
     pub production: bool,
     pub server_port: i16,
     pub db_connection: String,
-    // Todo: Move token to db
-    pub telegram_token: String,
 
     #[serde(skip_deserializing)]
     pub storage: Option<Storage>,
@@ -18,7 +16,6 @@ pub struct Config {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Storage {
-    pub auth: String,
     pub temporary: String,
     pub finished: String,
     pub elements: String,

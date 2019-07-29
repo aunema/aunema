@@ -28,13 +28,27 @@ CREATE TABLE IF NOT EXISTS links
 CREATE TABLE IF NOT EXISTS publishers
 (
     id UUID PRIMARY KEY,
-    chat_id INT8 NOT NULL,
+
+    auth JSONB NOT NULL,
+    config JSONB NOT NULL,
+    repeats STRING[] NOT NULL,
 
     social_network INT2 NOT NULL UNIQUE,
     supported_media INT2[] NOT NULL,
 
-    caption STRING NULL,
+    created_at INT8 NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS providers
+(
+    id UUID PRIMARY KEY,
+
+    auth JSONB NOT NULL,
+    config JSONB NOT NULL,
     repeats STRING[] NOT NULL,
+
+    social_network INT2 NOT NULL UNIQUE,
+    supported_media INT2[] NOT NULL,
 
     created_at INT8 NOT NULL
 );

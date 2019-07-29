@@ -1,11 +1,13 @@
 pub mod api;
 
+mod enums;
 mod link;
 mod media;
-mod enums;
+mod provider;
 mod publisher;
 
-pub use link::Link;
-pub use media::Media;
 pub use enums::*;
-pub use publisher::Publisher;
+pub use link::*;
+pub use media::*;
+pub use provider::*;
+pub use publisher::*;
