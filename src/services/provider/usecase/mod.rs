@@ -1,9 +1,9 @@
-mod media;
 mod links;
+mod media;
 
 use crate::config::Config;
 use crate::helpers::database::Database;
-use crate::models::{SocialNetwork, Provider};
+use crate::models::{Provider, SocialNetwork};
 
 use std::error::Error;
 use std::sync::Arc;
@@ -23,7 +23,11 @@ pub fn init(cnfg: &Arc<Config>, db_pool: &Database) -> Arc<ProviderUsecase> {
 }
 
 impl ProviderUsecase {
-    pub fn get_provider(&self, social_network: SocialNetwork) -> Result<Option<Provider>, Box<dyn Error>> {
+    #[allow(dead_code)]
+    pub fn get_provider(
+        &self,
+        social_network: SocialNetwork,
+    ) -> Result<Option<Provider>, Box<dyn Error>> {
         let client = self.db_pool.get()?;
         for row in &client
             .query(

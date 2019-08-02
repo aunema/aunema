@@ -11,12 +11,14 @@ use carapax::prelude::{UpdateMethod, UpdatesStream};
 use std::sync::Arc;
 
 pub fn init_services(cnfg: Arc<Config>) {
-    let addr = format!("0.0.0.0:{}", cnfg.server_port);
-    let token = String::from("token");//cnfg.telegram_token.clone();
-
     let sys = System::new("aunema");
     let db_pool = database::init_pool(&cnfg, 5).expect("Failed to init database connection");
+
+    let addr = format!("0.0.0.0:{}", cnfg.server_port);
+    let token = String::from("token");
+
     let mailer = email::init_mailer(&cnfg).expect("Failed to init mailer");
+    // Todo: Send db_pool to telegram setupd
     let mut telegram = api::init_telegram(token).expect("Failed to init telegram api");
 
     let provider_ucs = provider::usecase::init(&cnfg, &db_pool);
